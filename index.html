@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoOffline - Simples e Seguro</title>
+    <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23667eea'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9v4c0 .83.67 1.5 1.5 1.5S8 13.83 8 13V9c0-2.48 2.02-4.5 4.5-4.5S17 6.52 17 9v4c0 .83.67 1.5 1.5 1.5S20 13.83 20 13V9c0-3.87-3.13-7-7-7z'/%3E%3Cpath d='M12 22c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2zm6-6H6v-2h12v2z'/%3E%3C/svg%3E">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            color: #856404;
+        }
+
+        .warning-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: monospace;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-copy {
+            background: #28a745;
+            color: white;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        .btn-file {
+            background: #17a2b8;
+            color: white;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 CryptoOffline</h1>
+            <p>Criptografe e descriptografe mensagens com segurança - Funciona 100% offline</p>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Atenção:</strong>
+            Esta ferramenta roda completamente no seu navegador. Nenhuma mensagem sai do seu computador. 
+            <strong>Compartilhe a senha com seu amigo por um canal seguro (pessoalmente, WhatsApp criptografado, etc.)</strong>
+        </div>
+
+        <div class="main-grid">
+            <!-- Painel de Criptografia -->
+            <div class="card">
+                <h2>📝 Criptografar Mensagem</h2>
+                <label>Mensagem original:</label>
+                <textarea id="plainText" rows="5" placeholder="Digite sua mensagem secreta aqui..."></textarea>
+                
+                <label>Senha (use a mesma para descriptografar):</label>
+                <input type="password" id="encryptPassword" placeholder="Digite uma senha forte">
+                
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="encryptMessage()">🔒 Criptografar</button>
+                    <button class="btn-secondary" onclick="clearEncryptArea()">Limpar</button>
+                </div>
+                
+                <label>Resultado criptografado (envie isso para seu amigo):</label>
+                <textarea id="encryptedResult" rows="4" readonly placeholder="Resultado aparecerá aqui..."></textarea>
+                
+                <div class="file-actions">
+                    <button class="btn-copy" onclick="copyToClipboard('encryptedResult')">📋 Copiar resultado</button>
+                    <button class="btn-file" onclick="saveEncryptedToFile()">💾 Salvar arquivo</button>
+                </div>
+                
+                <div id="encryptStatus"></div>
+            </div>
+
+            <!-- Painel de Descriptografia -->
+            <div class="card">
+                <h2>🔓 Descriptografar Mensagem</h2>
+                <label>Texto criptografado recebido:</label>
+                <textarea id="cipherText" rows="5" placeholder="Cole o texto criptografado aqui..."></textarea>
+                
+                <div class="file-actions">
+                    <button class="btn-file" onclick="loadFileToDecrypt()">📂 Carregar arquivo</button>
+                </div>
+                
+                <label>Senha (a mesma usada na criptografia):</label>
+                <input type="password" id="decryptPassword" placeholder="Digite a senha">
+                
+                <div class="btn-group">
+                    <button class="btn-primary" onclick="decryptMessage()">🔓 Descriptografar</button>
+                    <button class="btn-secondary" onclick="clearDecryptArea()">Limpar</button>
+                </div>
+                
+                <label>Mensagem original:</label>
+                <textarea id="decryptedResult" rows="4" readonly placeholder="Mensagem descriptografada aparecerá aqui..."></textarea>
+                
+                <button class="btn-copy" onclick="copyToClipboard('decryptedResult')">📋 Copiar resultado</button>
+                
+                <div id="decryptStatus"></div>
+            </div>
+        </div>
+
+        <!-- Instruções -->
+        <div class="info-box">
+            <h3>📖 Como usar:</h3>
+            <p><strong>1.</strong> Combine uma senha secreta com seu amigo (pessoalmente ou por canal seguro)</p>
+            <p><strong>2.</strong> Escreva sua mensagem no lado esquerdo, digite a senha e clique em "Criptografar"</p>
+            <p><strong>3.</strong> Copie o resultado criptografado ou salve em arquivo e envie para seu amigo</p>
+            <p><strong>4.</strong> Seu amigo cola o texto (ou carrega o arquivo) no lado direito, digita a mesma senha e clica em "Descriptografar"</p>
+            <p><strong>🔒 Segurança:</strong> Usamos AES-GCM (padrão militar) + derivação de chave PBKDF2</p>
+            <p><strong>💾 Offline:</strong> Salve esta página (Ctrl+S) e use sem internet para máxima segurança</p>
+        </div>
+    </div>
+
+    <script>
+        // Funções auxiliares
+        async function deriveKey(password, salt) {
+            const encoder = new TextEncoder();
+            const passwordBuffer = encoder.encode(password);
+            const baseKey = await crypto.subtle.importKey(
+                'raw',
+                passwordBuffer,
+                { name: 'PBKDF2' },
+                false,
+                ['deriveKey']
+            );
+            
+            const key = await crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: salt,
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                baseKey,
+                {
+                    name: 'AES-GCM',
+                    length: 256
+                },
+                false,
+                ['encrypt', 'decrypt']
+            );
+            
+            return key;
+        }
+
+        // Função para criptografar
+        async function encryptMessage() {
+            const plainText = document.getElementById('plainText').value;
+            const password = document.getElementById('encryptPassword').value;
+            const statusDiv = document.getElementById('encryptStatus');
+            
+            if (!plainText) {
+                showStatus(statusDiv, '❌ Digite uma mensagem para criptografar', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showStatus(statusDiv, '❌ Digite uma senha', 'error');
+                return;
+            }
+            
+            try {
+                showStatus(statusDiv, '🔄 Criptografando...', 'info');
+                
+                const salt = crypto.getRandomValues(new Uint8Array(32));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const key = await deriveKey(password, salt);
+                const encoder = new TextEncoder();
+                const data = encoder.encode(plainText);
+                
+                const encrypted = await crypto.subtle.encrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    key,
+                    data
+                );
+                
+                const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                result.set(salt, 0);
+                result.set(iv, salt.length);
+                result.set(new Uint8Array(encrypted), salt.length + iv.length);
+                
+                const base64Result = btoa(String.fromCharCode.apply(null, result));
+                
+                document.getElementById('encryptedResult').value = base64Result;
+                showStatus(statusDiv, '✅ Mensagem criptografada com sucesso! Copie e envie para seu amigo.', 'success');
+                
+            } catch (error) {
+                console.error(error);
+                showStatus(statusDiv, '❌ Erro ao criptografar: ' + error.message, 'error');
+            }
+        }
+        
+        // Função para descriptografar
+        async function decryptMessage() {
+            const cipherText = document.getElementById('cipherText').value;
+            const password = document.getElementById('decryptPassword').value;
+            const statusDiv = document.getElementById('decryptStatus');
+            
+            if (!cipherText) {
+                showStatus(statusDiv, '❌ Cole o texto criptografado', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showStatus(statusDiv, '❌ Digite a senha', 'error');
+                return;
+            }
+            
+            try {
+                showStatus(statusDiv, '🔄 Descriptografando...', 'info');
+                
+                const binaryString = atob(cipherText);
+                const data = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    data[i] = binaryString.charCodeAt(i);
+                }
+                
+                const salt = data.slice(0, 32);
+                const iv = data.slice(32, 44);
+                const encryptedData = data.slice(44);
+                
+                const key = await deriveKey(password, salt);
+                
+                const decrypted = await crypto.subtle.decrypt(
+                    {
+                        name: 'AES-GCM',
+                        iv: iv
+                    },
+                    key,
+                    encryptedData
+                );
+                
+                const decoder = new TextDecoder();
+                const plainText = decoder.decode(decrypted);
+                
+                document.getElementById('decryptedResult').value = plainText;
+                showStatus(statusDiv, '✅ Mensagem descriptografada com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error(error);
+                showStatus(statusDiv, '❌ Erro ao descriptografar. Verifique se a senha está correta e se o texto não foi corrompido.', 'error');
+            }
+        }
+        
+        // Função para mostrar status
+        function showStatus(element, message, type) {
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+            setTimeout(() => {
+                if (element.innerHTML.includes(message)) {
+                    element.innerHTML = '';
+                }
+            }, 5000);
+        }
+        
+        // Função para copiar para clipboard
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            if (!textarea.value) {
+                alert('Não há nada para copiar!');
+                return;
+            }
+            
+            textarea.select();
+            document.execCommand('copy');
+            
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '✓ Copiado!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Salvar texto criptografado em arquivo
+        function saveEncryptedToFile() {
+            const encryptedText = document.getElementById('encryptedResult').value;
+            if (!encryptedText) {
+                alert('Nada para salvar. Criptografe uma mensagem primeiro!');
+                return;
+            }
+            
+            const blob = new Blob([encryptedText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mensagem_criptografada_${Date.now()}.crypto`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus(document.getElementById('encryptStatus'), '💾 Arquivo salvo com sucesso!', 'success');
+        }
+        
+        // Carregar arquivo para descriptografar
+        function loadFileToDecrypt() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.crypto,.txt';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const content = event.target.result;
+                        document.getElementById('cipherText').value = content;
+                        showStatus(document.getElementById('decryptStatus'), '📂 Arquivo carregado! Digite a senha e clique em Descriptografar', 'success');
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+        
+        // Limpar áreas
+        function clearEncryptArea() {
+            document.getElementById('plainText').value = '';
+            document.getElementById('encryptPassword').value = '';
+            document.getElementById('encryptedResult').value = '';
+            document.getElementById('encryptStatus').innerHTML = '';
+        }
+        
+        function clearDecryptArea() {
+            document.getElementById('cipherText').value = '';
+            document.getElementById('decryptPassword').value = '';
+            document.getElementById('decryptedResult').value = '';
+            document.getElementById('decryptStatus').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
