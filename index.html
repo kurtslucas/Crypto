@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CryptoOffline - Simples e Seguro</title>
+    <title>CryptoOffline - Texto e Arquivos</title>
     <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23667eea'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9v4c0 .83.67 1.5 1.5 1.5S8 13.83 8 13V9c0-2.48 2.02-4.5 4.5-4.5S17 6.52 17 9v4c0 .83.67 1.5 1.5 1.5S20 13.83 20 13V9c0-3.87-3.13-7-7-7z'/%3E%3Cpath d='M12 22c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2zm6-6H6v-2h12v2z'/%3E%3C/svg%3E">
     <style>
         * {
@@ -25,7 +25,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             text-align: center;
             color: white;
@@ -42,7 +41,6 @@
             opacity: 0.9;
         }
 
-        /* Abas */
         .tabs {
             display: flex;
             gap: 8px;
@@ -69,7 +67,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 20px;
@@ -86,7 +83,6 @@
             gap: 8px;
         }
 
-        /* Formulário */
         .field-group {
             margin-bottom: 20px;
         }
@@ -105,7 +101,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 14px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             resize: vertical;
             transition: border-color 0.2s;
         }
@@ -121,7 +117,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 14px;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
         }
 
         input[type="password"]:focus {
@@ -129,7 +125,6 @@
             border-color: #667eea;
         }
 
-        /* Botões */
         .btn-group {
             display: flex;
             gap: 10px;
@@ -175,13 +170,32 @@
             padding: 10px;
         }
 
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+            font-size: 14px;
+            padding: 10px;
+        }
+
         .file-actions {
             display: flex;
             gap: 8px;
             margin-top: 8px;
         }
 
-        /* Status */
+        .file-info {
+            background: #e7f3ff;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .status {
             margin-top: 12px;
             padding: 10px;
@@ -205,7 +219,6 @@
             color: #0c5460;
         }
 
-        /* Warning e Info */
         .warning-box {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -229,7 +242,6 @@
             font-size: 0.8em;
         }
 
-        /* Esconder conteúdo das abas */
         .tab-content {
             display: none;
         }
@@ -237,29 +249,54 @@
         .tab-content.active {
             display: block;
         }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: normal;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h1>🔐 CryptoOffline</h1>
-        <p>Criptografia simples e segura • Suporta textos gigantes</p>
+        <p>Criptografia para textos e arquivos • 100% offline</p>
     </div>
 
-    <!-- Abas -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('encrypt')">📝 Criptografar</button>
         <button class="tab-btn" onclick="switchTab('decrypt')">🔓 Descriptografar</button>
     </div>
 
-    <!-- Conteúdo Criptografar -->
+    <!-- Aba Criptografar -->
     <div id="encryptTab" class="tab-content active">
         <div class="card">
             <h2>🔒 Criptografar</h2>
             
+            <!-- Opção 1: Texto -->
             <div class="field-group">
-                <label>📄 Sua mensagem</label>
-                <textarea id="plainText" rows="6" placeholder="Digite sua mensagem secreta... (sem limites! Pode colar livros inteiros)"></textarea>
+                <label>📄 Opção 1: Digite ou cole um texto</label>
+                <textarea id="plainText" rows="4" placeholder="Digite sua mensagem secreta..."></textarea>
+            </div>
+
+            <div style="text-align: center; color: #999; margin: 10px 0;">— ou —</div>
+
+            <!-- Opção 2: Arquivo -->
+            <div class="field-group">
+                <label>📁 Opção 2: Escolha um arquivo (foto, vídeo, música, PDF...)</label>
+                <input type="file" id="fileInput" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 12px;">
+                <div id="fileInfo" class="file-info" style="display: none;"></div>
             </div>
 
             <div class="field-group">
@@ -268,34 +305,32 @@
             </div>
 
             <div class="btn-group">
-                <button class="btn-primary" onclick="encryptMessage()">🔒 Criptografar</button>
-                <button class="btn-secondary" onclick="clearEncryptArea()">Limpar</button>
-            </div>
-
-            <div class="field-group">
-                <label>📤 Resultado criptografado (envie para seu amigo)</label>
-                <textarea id="encryptedResult" rows="4" readonly placeholder="Resultado aparecerá aqui..."></textarea>
-                <div class="file-actions">
-                    <button class="btn-copy" onclick="copyToClipboard('encryptedResult')">📋 Copiar</button>
-                    <button class="btn-file" onclick="saveEncryptedToFile()">💾 Salvar arquivo</button>
-                </div>
+                <button class="btn-primary" onclick="encrypt()">🔒 Criptografar</button>
+                <button class="btn-secondary" onclick="clearEncryptArea()">Limpar tudo</button>
             </div>
 
             <div id="encryptStatus"></div>
         </div>
     </div>
 
-    <!-- Conteúdo Descriptografar -->
+    <!-- Aba Descriptografar -->
     <div id="decryptTab" class="tab-content">
         <div class="card">
             <h2>🔓 Descriptografar</h2>
             
+            <!-- Opção 1: Texto criptografado -->
             <div class="field-group">
-                <label>📥 Texto criptografado</label>
-                <textarea id="cipherText" rows="6" placeholder="Cole o texto que recebeu..."></textarea>
-                <div style="margin-top: 8px;">
-                    <button class="btn-file" onclick="loadFileToDecrypt()" style="width: 100%;">📂 Carregar arquivo .crypto</button>
-                </div>
+                <label>📄 Opção 1: Cole o texto criptografado</label>
+                <textarea id="cipherText" rows="4" placeholder="Cole o texto que recebeu..."></textarea>
+            </div>
+
+            <div style="text-align: center; color: #999; margin: 10px 0;">— ou —</div>
+
+            <!-- Opção 2: Arquivo .crypto -->
+            <div class="field-group">
+                <label>📁 Opção 2: Carregue um arquivo .crypto</label>
+                <input type="file" id="cryptoFileInput" accept=".crypto" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 12px;">
+                <div id="cryptoFileInfo" class="file-info" style="display: none;"></div>
             </div>
 
             <div class="field-group">
@@ -304,37 +339,34 @@
             </div>
 
             <div class="btn-group">
-                <button class="btn-primary" onclick="decryptMessage()">🔓 Descriptografar</button>
-                <button class="btn-secondary" onclick="clearDecryptArea()">Limpar</button>
-            </div>
-
-            <div class="field-group">
-                <label>📄 Mensagem original</label>
-                <textarea id="decryptedResult" rows="6" readonly placeholder="Mensagem aparecerá aqui..."></textarea>
-                <button class="btn-copy" onclick="copyToClipboard('decryptedResult')" style="margin-top: 8px; width: 100%;">📋 Copiar mensagem</button>
+                <button class="btn-primary" onclick="decrypt()">🔓 Descriptografar</button>
+                <button class="btn-secondary" onclick="clearDecryptArea()">Limpar tudo</button>
             </div>
 
             <div id="decryptStatus"></div>
         </div>
     </div>
 
-    <!-- Aviso e instrução -->
     <div class="warning-box">
         ⚠️ <strong>Atenção:</strong> Compartilhe a senha com seu amigo por um canal seguro (pessoalmente, WhatsApp criptografado, etc.)
     </div>
 
     <div class="info-box">
         <strong>📖 Como usar:</strong><br>
-        <strong>1.</strong> Combine uma senha secreta com seu amigo<br>
-        <strong>2.</strong> Na aba "Criptografar", digite a mensagem e senha → clique em Criptografar<br>
-        <strong>3.</strong> Copie o resultado ou salve o arquivo e envie para seu amigo<br>
-        <strong>4.</strong> Seu amigo vai na aba "Descriptografar", cola o texto (ou carrega arquivo), digita a mesma senha → Descriptografar<br><br>
+        <strong>Para textos:</strong> Digite na caixa de texto → senha → Criptografar → Copiar resultado<br>
+        <strong>Para arquivos:</strong> Escolha o arquivo → senha → Criptografar → Baixa arquivo .crypto<br>
+        <strong>Para descriptografar:</strong> Cole o texto OU carregue arquivo .crypto → senha → Descriptografar<br><br>
+        ✅ <strong>Novidade:</strong> Funciona com QUALQUER arquivo (fotos, vídeos, músicas, PDFs!)<br>
         🔒 <strong>Segurança:</strong> AES-256-GCM + PBKDF2 (padrão militar)<br>
         💾 <strong>Offline:</strong> Salve esta página (Ctrl+S) e use sem internet
     </div>
 </div>
 
 <script>
+    // Variáveis globais para armazenar arquivos selecionados
+    let selectedFile = null;
+    let selectedCryptoFile = null;
+
     // Alternar abas
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -349,25 +381,54 @@
         }
     }
 
-    // ==================== FUNÇÕES DE CONVERSÃO (SEM LIMITES) ====================
-    function arrayBufferToBase64(buffer) {
-        const bytes = new Uint8Array(buffer);
-        let binary = '';
-        const chunkSize = 8192; // Processa em pedaços de 8KB
-        for (let i = 0; i < bytes.length; i += chunkSize) {
-            const chunk = bytes.subarray(i, i + chunkSize);
-            binary += String.fromCharCode.apply(null, chunk);
+    // Monitorar seleção de arquivo para criptografia
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            selectedFile = e.target.files[0];
+            const infoDiv = document.getElementById('fileInfo');
+            infoDiv.style.display = 'flex';
+            infoDiv.innerHTML = `
+                <span>📎 ${selectedFile.name} (${formatFileSize(selectedFile.size)})</span>
+                <button class="btn-warning" onclick="clearSelectedFile()" style="padding: 4px 8px;">Remover</button>
+            `;
+        } else {
+            clearSelectedFile();
         }
-        return btoa(binary);
+    });
+
+    // Monitorar seleção de arquivo para descriptografia
+    document.getElementById('cryptoFileInput').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            selectedCryptoFile = e.target.files[0];
+            const infoDiv = document.getElementById('cryptoFileInfo');
+            infoDiv.style.display = 'flex';
+            infoDiv.innerHTML = `
+                <span>🔐 ${selectedCryptoFile.name} (${formatFileSize(selectedCryptoFile.size)})</span>
+                <button class="btn-warning" onclick="clearSelectedCryptoFile()" style="padding: 4px 8px;">Remover</button>
+            `;
+        } else {
+            clearSelectedCryptoFile();
+        }
+    });
+
+    function clearSelectedFile() {
+        selectedFile = null;
+        document.getElementById('fileInput').value = '';
+        document.getElementById('fileInfo').style.display = 'none';
+        document.getElementById('fileInfo').innerHTML = '';
     }
 
-    function base64ToArrayBuffer(base64) {
-        const binaryString = atob(base64);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes.buffer;
+    function clearSelectedCryptoFile() {
+        selectedCryptoFile = null;
+        document.getElementById('cryptoFileInput').value = '';
+        document.getElementById('cryptoFileInfo').style.display = 'none';
+        document.getElementById('cryptoFileInfo').innerHTML = '';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
     // ==================== FUNÇÕES DE CRIPTOGRAFIA ====================
@@ -384,126 +445,209 @@
         );
     }
 
-    async function encryptMessage() {
-        const plainText = document.getElementById('plainText').value;
+    function arrayBufferToBase64(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.subarray(i, i + chunkSize);
+            binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+    }
+
+    function base64ToArrayBuffer(base64) {
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    async function encryptData(dataBuffer, password) {
+        const salt = crypto.getRandomValues(new Uint8Array(32));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveKey(password, salt);
+        
+        const encrypted = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: iv },
+            key,
+            dataBuffer
+        );
+        
+        const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+        result.set(salt, 0);
+        result.set(iv, salt.length);
+        result.set(new Uint8Array(encrypted), salt.length + iv.length);
+        
+        return result.buffer;
+    }
+
+    async function decryptData(encryptedBuffer, password) {
+        const data = new Uint8Array(encryptedBuffer);
+        const salt = data.slice(0, 32);
+        const iv = data.slice(32, 44);
+        const encryptedData = data.slice(44);
+        const key = await deriveKey(password, salt);
+        
+        return await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv },
+            key,
+            encryptedData
+        );
+    }
+
+    // ==================== CRIPTOGRAFAR (TEXTO OU ARQUIVO) ====================
+    async function encrypt() {
         const password = document.getElementById('encryptPassword').value;
         const statusDiv = document.getElementById('encryptStatus');
+        const plainText = document.getElementById('plainText').value;
         
-        if (!plainText) { showStatus(statusDiv, '❌ Digite uma mensagem', 'error'); return; }
-        if (!password) { showStatus(statusDiv, '❌ Digite uma senha', 'error'); return; }
-        
-        try {
-            showStatus(statusDiv, '🔄 Criptografando texto grande...', 'info');
-            
-            const salt = crypto.getRandomValues(new Uint8Array(32));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const key = await deriveKey(password, salt);
-            const encoder = new TextEncoder();
-            const data = encoder.encode(plainText);
-            
-            const encrypted = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                data
-            );
-            
-            // Combinar salt + iv + dados criptografados
-            const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-            result.set(salt, 0);
-            result.set(iv, salt.length);
-            result.set(new Uint8Array(encrypted), salt.length + iv.length);
-            
-            // Usar função sem limite de tamanho
-            const base64Result = arrayBufferToBase64(result.buffer);
-            
-            document.getElementById('encryptedResult').value = base64Result;
-            showStatus(statusDiv, '✅ Mensagem criptografada! Copie e envie.', 'success');
-        } catch (error) {
-            console.error(error);
-            showStatus(statusDiv, '❌ Erro: ' + error.message, 'error');
+        if (!password) {
+            showStatus(statusDiv, '❌ Digite uma senha', 'error');
+            return;
         }
+        
+        // Caso 1: Tem arquivo selecionado
+        if (selectedFile) {
+            showStatus(statusDiv, `🔄 Criptografando arquivo ${selectedFile.name}...`, 'info');
+            try {
+                const fileBuffer = await selectedFile.arrayBuffer();
+                const encryptedBuffer = await encryptData(fileBuffer, password);
+                const encryptedBase64 = arrayBufferToBase64(encryptedBuffer);
+                
+                // Salvar como arquivo .crypto
+                downloadFile(encryptedBase64, `${selectedFile.name}.crypto`, 'text/plain');
+                showStatus(statusDiv, `✅ Arquivo criptografado! Download iniciado: ${selectedFile.name}.crypto`, 'success');
+                clearSelectedFile();
+            } catch (error) {
+                showStatus(statusDiv, '❌ Erro ao criptografar arquivo: ' + error.message, 'error');
+            }
+            return;
+        }
+        
+        // Caso 2: Texto
+        if (plainText) {
+            showStatus(statusDiv, '🔄 Criptografando texto...', 'info');
+            try {
+                const encoder = new TextEncoder();
+                const textBuffer = encoder.encode(plainText);
+                const encryptedBuffer = await encryptData(textBuffer, password);
+                const encryptedBase64 = arrayBufferToBase64(encryptedBuffer);
+                
+                document.getElementById('encryptedResult').value = encryptedBase64;
+                showStatus(statusDiv, '✅ Texto criptografado! Copie o resultado.', 'success');
+            } catch (error) {
+                showStatus(statusDiv, '❌ Erro ao criptografar texto: ' + error.message, 'error');
+            }
+            return;
+        }
+        
+        showStatus(statusDiv, '❌ Digite um texto OU selecione um arquivo', 'error');
     }
 
-    async function decryptMessage() {
-        const cipherText = document.getElementById('cipherText').value;
+    // ==================== DESCRIPTOGRAFAR (TEXTO OU ARQUIVO) ====================
+    async function decrypt() {
         const password = document.getElementById('decryptPassword').value;
         const statusDiv = document.getElementById('decryptStatus');
+        const cipherText = document.getElementById('cipherText').value;
         
-        if (!cipherText) { showStatus(statusDiv, '❌ Cole o texto criptografado', 'error'); return; }
-        if (!password) { showStatus(statusDiv, '❌ Digite a senha', 'error'); return; }
-        
-        try {
-            showStatus(statusDiv, '🔄 Descriptografando texto grande...', 'info');
-            
-            // Usar função sem limite de tamanho
-            const data = new Uint8Array(base64ToArrayBuffer(cipherText));
-            
-            const salt = data.slice(0, 32);
-            const iv = data.slice(32, 44);
-            const encryptedData = data.slice(44);
-            const key = await deriveKey(password, salt);
-            const decrypted = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv: iv },
-                key,
-                encryptedData
-            );
-            
-            const decoder = new TextDecoder();
-            const plainText = decoder.decode(decrypted);
-            
-            document.getElementById('decryptedResult').value = plainText;
-            showStatus(statusDiv, '✅ Mensagem descriptografada!', 'success');
-        } catch (error) {
-            console.error(error);
-            showStatus(statusDiv, '❌ Senha incorreta ou arquivo inválido.', 'error');
+        if (!password) {
+            showStatus(statusDiv, '❌ Digite a senha', 'error');
+            return;
         }
+        
+        // Caso 1: Tem arquivo .crypto selecionado
+        if (selectedCryptoFile) {
+            showStatus(statusDiv, `🔄 Descriptografando arquivo ${selectedCryptoFile.name}...`, 'info');
+            try {
+                const fileContent = await selectedCryptoFile.text();
+                const encryptedBuffer = base64ToArrayBuffer(fileContent);
+                const decryptedBuffer = await decryptData(encryptedBuffer, password);
+                
+                // Tentar descobrir se é texto ou arquivo binário
+                const decryptedString = new TextDecoder().decode(decryptedBuffer);
+                const isText = isLikelyText(decryptedString);
+                
+                if (isText && decryptedBuffer.byteLength < 50000) {
+                    // É texto pequeno -> mostra na caixa
+                    document.getElementById('decryptedResult').value = decryptedString;
+                    showStatus(statusDiv, '✅ Texto descriptografado! (exibido abaixo)', 'success');
+                } else {
+                    // É arquivo binário ou texto grande -> baixa
+                    const originalName = selectedCryptoFile.name.replace(/\.crypto$/, '');
+                    const blob = new Blob([decryptedBuffer], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = originalName || 'decrypted_file';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showStatus(statusDiv, `✅ Arquivo descriptografado! Download iniciado: ${originalName}`, 'success');
+                }
+                clearSelectedCryptoFile();
+            } catch (error) {
+                showStatus(statusDiv, '❌ Erro ao descriptografar. Senha incorreta ou arquivo inválido.', 'error');
+            }
+            return;
+        }
+        
+        // Caso 2: Texto criptografado
+        if (cipherText) {
+            showStatus(statusDiv, '🔄 Descriptografando texto...', 'info');
+            try {
+                const encryptedBuffer = base64ToArrayBuffer(cipherText);
+                const decryptedBuffer = await decryptData(encryptedBuffer, password);
+                const decryptedString = new TextDecoder().decode(decryptedBuffer);
+                
+                // Verificar se o resultado é muito grande
+                if (decryptedBuffer.byteLength > 100000) {
+                    // Texto grande -> baixar como arquivo
+                    const blob = new Blob([decryptedString], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `mensagem_descriptografada.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showStatus(statusDiv, '✅ Texto descriptografado! (grande demais para exibir, download iniciado)', 'success');
+                } else {
+                    // Texto pequeno -> exibir
+                    document.getElementById('decryptedResult').value = decryptedString;
+                    showStatus(statusDiv, '✅ Texto descriptografado!', 'success');
+                }
+            } catch (error) {
+                showStatus(statusDiv, '❌ Erro ao descriptografar. Verifique a senha.', 'error');
+            }
+            return;
+        }
+        
+        showStatus(statusDiv, '❌ Cole um texto criptografado OU selecione um arquivo .crypto', 'error');
     }
 
-    // ==================== ARQUIVOS ====================
-    function saveEncryptedToFile() {
-        const encryptedText = document.getElementById('encryptedResult').value;
-        if (!encryptedText) { alert('Nada para salvar. Criptografe uma mensagem primeiro!'); return; }
-        
-        const blob = new Blob([encryptedText], { type: 'text/plain' });
+    // Função simples para detectar se é texto (não infalível, mas funciona na prática)
+    function isLikelyText(str) {
+        if (str.length === 0) return true;
+        // Se mais de 80% dos caracteres são imprimíveis, é texto
+        const printableCount = (str.match(/[\x20-\x7E\n\r\t]/g) || []).length;
+        return (printableCount / str.length) > 0.8;
+    }
+
+    function downloadFile(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mensagem_${Date.now()}.crypto`;
+        a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
-        showStatus(document.getElementById('encryptStatus'), '💾 Arquivo salvo!', 'success');
-    }
-
-    function loadFileToDecrypt() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.crypto,.txt';
-        input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const text = await file.text();
-                document.getElementById('cipherText').value = text;
-                showStatus(document.getElementById('decryptStatus'), '📂 Arquivo carregado! Digite a senha.', 'success');
-            }
-        };
-        input.click();
     }
 
     // ==================== UTILITÁRIOS ====================
     function showStatus(element, message, type) {
         element.innerHTML = `<div class="status ${type}">${message}</div>`;
-        setTimeout(() => { if (element.innerHTML.includes(message)) element.innerHTML = ''; }, 4000);
-    }
-
-    function copyToClipboard(elementId) {
-        const el = document.getElementById(elementId);
-        if (!el.value) { alert('Nada para copiar'); return; }
-        el.select();
-        document.execCommand('copy');
-        const btn = event.target;
-        const original = btn.textContent;
-        btn.textContent = '✓ Copiado!';
-        setTimeout(() => btn.textContent = original, 1500);
+        setTimeout(() => { if (element.innerHTML.includes(message)) element.innerHTML = ''; }, 5000);
     }
 
     function clearEncryptArea() {
@@ -511,6 +655,7 @@
         document.getElementById('encryptPassword').value = '';
         document.getElementById('encryptedResult').value = '';
         document.getElementById('encryptStatus').innerHTML = '';
+        clearSelectedFile();
     }
 
     function clearDecryptArea() {
@@ -518,6 +663,7 @@
         document.getElementById('decryptPassword').value = '';
         document.getElementById('decryptedResult').value = '';
         document.getElementById('decryptStatus').innerHTML = '';
+        clearSelectedCryptoFile();
     }
 </script>
 </body>
