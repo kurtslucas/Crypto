@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -242,7 +243,7 @@
 <div class="container">
     <div class="header">
         <h1>🔐 CryptoOffline</h1>
-        <p>Criptografia simples e segura • 100% offline</p>
+        <p>Criptografia simples e segura • Suporta textos gigantes</p>
     </div>
 
     <!-- Abas -->
@@ -258,7 +259,7 @@
             
             <div class="field-group">
                 <label>📄 Sua mensagem</label>
-                <textarea id="plainText" rows="5" placeholder="Digite sua mensagem secreta..."></textarea>
+                <textarea id="plainText" rows="6" placeholder="Digite sua mensagem secreta... (sem limites! Pode colar livros inteiros)"></textarea>
             </div>
 
             <div class="field-group">
@@ -291,7 +292,7 @@
             
             <div class="field-group">
                 <label>📥 Texto criptografado</label>
-                <textarea id="cipherText" rows="5" placeholder="Cole o texto que recebeu..."></textarea>
+                <textarea id="cipherText" rows="6" placeholder="Cole o texto que recebeu..."></textarea>
                 <div style="margin-top: 8px;">
                     <button class="btn-file" onclick="loadFileToDecrypt()" style="width: 100%;">📂 Carregar arquivo .crypto</button>
                 </div>
@@ -309,7 +310,7 @@
 
             <div class="field-group">
                 <label>📄 Mensagem original</label>
-                <textarea id="decryptedResult" rows="4" readonly placeholder="Mensagem aparecerá aqui..."></textarea>
+                <textarea id="decryptedResult" rows="6" readonly placeholder="Mensagem aparecerá aqui..."></textarea>
                 <button class="btn-copy" onclick="copyToClipboard('decryptedResult')" style="margin-top: 8px; width: 100%;">📋 Copiar mensagem</button>
             </div>
 
@@ -336,7 +337,6 @@
 <script>
     // Alternar abas
     function switchTab(tab) {
-        // Atualizar botões
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         if (tab === 'encrypt') {
             document.querySelector('.tab-btn:first-child').classList.add('active');
@@ -347,6 +347,27 @@
             document.getElementById('decryptTab').classList.add('active');
             document.getElementById('encryptTab').classList.remove('active');
         }
+    }
+
+    // ==================== FUNÇÕES DE CONVERSÃO (SEM LIMITES) ====================
+    function arrayBufferToBase64(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let binary = '';
+        const chunkSize = 8192; // Processa em pedaços de 8KB
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.subarray(i, i + chunkSize);
+            binary += String.fromCharCode.apply(null, chunk);
+        }
+        return btoa(binary);
+    }
+
+    function base64ToArrayBuffer(base64) {
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
     }
 
     // ==================== FUNÇÕES DE CRIPTOGRAFIA ====================
@@ -372,22 +393,33 @@
         if (!password) { showStatus(statusDiv, '❌ Digite uma senha', 'error'); return; }
         
         try {
-            showStatus(statusDiv, '🔄 Criptografando...', 'info');
+            showStatus(statusDiv, '🔄 Criptografando texto grande...', 'info');
+            
             const salt = crypto.getRandomValues(new Uint8Array(32));
             const iv = crypto.getRandomValues(new Uint8Array(12));
             const key = await deriveKey(password, salt);
             const encoder = new TextEncoder();
-            const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, encoder.encode(plainText));
+            const data = encoder.encode(plainText);
             
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                data
+            );
+            
+            // Combinar salt + iv + dados criptografados
             const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
             result.set(salt, 0);
             result.set(iv, salt.length);
             result.set(new Uint8Array(encrypted), salt.length + iv.length);
             
-            const base64Result = btoa(String.fromCharCode.apply(null, result));
+            // Usar função sem limite de tamanho
+            const base64Result = arrayBufferToBase64(result.buffer);
+            
             document.getElementById('encryptedResult').value = base64Result;
             showStatus(statusDiv, '✅ Mensagem criptografada! Copie e envie.', 'success');
         } catch (error) {
+            console.error(error);
             showStatus(statusDiv, '❌ Erro: ' + error.message, 'error');
         }
     }
@@ -401,21 +433,28 @@
         if (!password) { showStatus(statusDiv, '❌ Digite a senha', 'error'); return; }
         
         try {
-            const binaryString = atob(cipherText);
-            const data = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) data[i] = binaryString.charCodeAt(i);
+            showStatus(statusDiv, '🔄 Descriptografando texto grande...', 'info');
+            
+            // Usar função sem limite de tamanho
+            const data = new Uint8Array(base64ToArrayBuffer(cipherText));
             
             const salt = data.slice(0, 32);
             const iv = data.slice(32, 44);
             const encryptedData = data.slice(44);
             const key = await deriveKey(password, salt);
-            const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, encryptedData);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                encryptedData
+            );
+            
             const decoder = new TextDecoder();
             const plainText = decoder.decode(decrypted);
             
             document.getElementById('decryptedResult').value = plainText;
             showStatus(statusDiv, '✅ Mensagem descriptografada!', 'success');
         } catch (error) {
+            console.error(error);
             showStatus(statusDiv, '❌ Senha incorreta ou arquivo inválido.', 'error');
         }
     }
