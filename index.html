@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CryptoOffline - Criptografia Segura</title>
-    <link rel="icon" type="image/png" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23667eea'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9v4c0 .83.67 1.5 1.5 1.5S8 13.83 8 13V9c0-2.48 2.02-4.5 4.5-4.5S17 6.52 17 9v4c0 .83.67 1.5 1.5 1.5S20 13.83 20 13V9c0-3.87-3.13-7-7-7z'/%3E%3Cpath d='M12 22c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2zm6-6H6v-2h12v2z'/%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
     <style>
         :root {
             --bg-primary: #0a0e1a;
@@ -32,11 +31,7 @@
             --radius-sm: 8px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -47,13 +42,10 @@
             overflow-x: hidden;
         }
 
-        /* Animated background */
         .bg-animation {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
@@ -62,10 +54,8 @@
         .bg-animation::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
                         radial-gradient(circle at 70% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
             animation: bgRotate 30s linear infinite;
@@ -76,11 +66,9 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Floating particles */
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 4px; height: 4px;
             background: var(--accent);
             border-radius: 50%;
             opacity: 0.3;
@@ -94,7 +82,6 @@
             50% { transform: translateY(-100vh) translateX(50px); }
         }
 
-        /* Layout */
         .container {
             position: relative;
             z-index: 1;
@@ -106,7 +93,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         .header {
             text-align: center;
             padding: 2rem 0 3rem;
@@ -120,8 +106,7 @@
         }
 
         .logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             border-radius: var(--radius-sm);
             display: flex;
@@ -168,12 +153,8 @@
             font-weight: 500;
         }
 
-        .badge svg {
-            width: 14px;
-            height: 14px;
-        }
+        .badge svg { width: 14px; height: 14px; }
 
-        /* Main Layout - Side by Side on Desktop */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -183,16 +164,10 @@
         }
 
         @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            .container {
-                padding: 1rem;
-            }
+            .main-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .container { padding: 1rem; }
         }
 
-        /* Cards */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -206,19 +181,14 @@
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--accent), var(--accent-light));
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .card:hover::before {
-            opacity: 1;
-        }
-
+        .card:hover::before { opacity: 1; }
         .card:hover {
             border-color: var(--border-focus);
             box-shadow: var(--shadow-lg);
@@ -233,8 +203,7 @@
         }
 
         .card-icon {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
@@ -252,17 +221,9 @@
             color: var(--success);
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
+        .card-title { font-size: 1.25rem; font-weight: 600; }
+        .card-desc { color: var(--text-muted); font-size: 0.9rem; }
 
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 0.5rem;
@@ -290,21 +251,14 @@
             gap: 0.5rem;
         }
 
-        .tab:hover {
-            color: var(--text-primary);
-        }
-
+        .tab:hover { color: var(--text-primary); }
         .tab.active {
             background: var(--bg-card);
             color: var(--text-primary);
             box-shadow: var(--shadow);
         }
 
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
+        .form-group { margin-bottom: 1.25rem; }
         .form-label {
             display: block;
             font-size: 0.85rem;
@@ -332,9 +286,7 @@
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        textarea::placeholder, input::placeholder {
-            color: var(--text-muted);
-        }
+        textarea::placeholder, input::placeholder { color: var(--text-muted); }
 
         textarea {
             min-height: 120px;
@@ -343,7 +295,6 @@
             line-height: 1.5;
         }
 
-        /* File Upload */
         .file-upload {
             position: relative;
             border: 2px dashed var(--border);
@@ -372,21 +323,9 @@
             cursor: pointer;
         }
 
-        .file-upload-icon {
-            font-size: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .file-upload-text {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .file-upload-hint {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-        }
+        .file-upload-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .file-upload-text { color: var(--text-secondary); font-size: 0.9rem; }
+        .file-upload-hint { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
 
         .file-info {
             display: none;
@@ -399,10 +338,7 @@
             margin-top: 0.75rem;
         }
 
-        .file-info.show {
-            display: flex;
-        }
-
+        .file-info.show { display: flex; }
         .file-info-name {
             flex: 1;
             font-size: 0.85rem;
@@ -422,11 +358,7 @@
             line-height: 1;
         }
 
-        /* Password */
-        .password-wrapper {
-            position: relative;
-        }
-
+        .password-wrapper { position: relative; }
         .password-toggle {
             position: absolute;
             right: 1rem;
@@ -440,9 +372,7 @@
             padding: 0.25rem;
         }
 
-        .password-toggle:hover {
-            color: var(--text-primary);
-        }
+        .password-toggle:hover { color: var(--text-primary); }
 
         .password-strength {
             display: flex;
@@ -472,7 +402,6 @@
         .strength-text.medium { color: var(--warning); }
         .strength-text.strong { color: var(--success); }
 
-        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -522,11 +451,8 @@
             border-color: var(--border-focus);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
+        .btn:active { transform: translateY(0); }
 
-        /* Result Area */
         .result-area {
             display: none;
             margin-top: 1.5rem;
@@ -559,10 +485,7 @@
             color: var(--text-secondary);
         }
 
-        .result-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
+        .result-actions { display: flex; gap: 0.5rem; }
 
         .btn-icon {
             padding: 0.4rem 0.6rem;
@@ -581,9 +504,9 @@
             max-height: 200px;
             overflow-y: auto;
             color: var(--text-primary);
+            white-space: pre-wrap;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 2rem 0;
@@ -591,16 +514,6 @@
             font-size: 0.85rem;
         }
 
-        .footer a {
-            color: var(--accent-light);
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Toast Notification */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -626,12 +539,9 @@
             opacity: 1;
         }
 
-        .toast.success {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-        }
+        .toast.success { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+        .toast.error { border-color: var(--danger); background: rgba(239, 68, 68, 0.1); }
 
-        /* Divider */
         .divider {
             display: flex;
             align-items: center;
@@ -648,55 +558,68 @@
             background: var(--border);
         }
 
-        /* Responsive */
         @media (max-width: 640px) {
-            .header {
-                padding: 1rem 0 2rem;
-            }
-            .logo h1 {
-                font-size: 1.5rem;
-            }
-            .card {
-                padding: 1.25rem;
-            }
-            .badges {
-                gap: 0.5rem;
-            }
-            .badge {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
-            }
+            .header { padding: 1rem 0 2rem; }
+            .logo h1 { font-size: 1.5rem; }
+            .card { padding: 1.25rem; }
+            .badges { gap: 0.5rem; }
+            .badge { font-size: 0.75rem; padding: 0.3rem 0.6rem; }
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* Loading */
         .loading {
             display: inline-block;
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .textarea-actions {
+            display: flex;
+            gap: 0.4rem;
+            margin-left: auto;
+        }
+
+        .btn-mini {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mini:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+        }
+
+        .btn-mini svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .form-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
@@ -709,11 +632,11 @@
                 <div class="logo-icon">🔐</div>
                 <h1>CryptoOffline</h1>
             </div>
-            <p class="subtitle">Criptografia AES-256-GCM direto no navegador. Seus dados nunca saem do seu dispositivo.</p>
+            <p class="subtitle">Criptografia AES-256 direto no navegador. Seus dados nunca saem do seu dispositivo.</p>
             <div class="badges">
                 <span class="badge">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    AES-256-GCM
+                    AES-256
                 </span>
                 <span class="badge">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
@@ -748,15 +671,21 @@
                     </button>
                 </div>
 
-                <!-- Text Encrypt -->
                 <div id="encrypt-text-panel">
                     <div class="form-group">
-                        <label class="form-label">Texto para criptografar</label>
+                        <div class="form-label-row">
+                            <label class="form-label">Texto para criptografar</label>
+                            <div class="textarea-actions">
+                                <button class="btn-mini" onclick="clearText('encrypt-text-input')" title="Limpar caixa">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
                         <textarea id="encrypt-text-input" placeholder="Digite ou cole seu texto aqui..."></textarea>
                     </div>
                 </div>
 
-                <!-- File Encrypt -->
                 <div id="encrypt-file-panel" style="display:none">
                     <div class="form-group">
                         <label class="form-label">Arquivo para criptografar</label>
@@ -834,15 +763,21 @@
                     </button>
                 </div>
 
-                <!-- Text Decrypt -->
                 <div id="decrypt-text-panel">
                     <div class="form-group">
-                        <label class="form-label">Texto criptografado</label>
+                        <div class="form-label-row">
+                            <label class="form-label">Texto criptografado</label>
+                            <div class="textarea-actions">
+                                <button class="btn-mini" onclick="clearText('decrypt-text-input')" title="Limpar caixa">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
                         <textarea id="decrypt-text-input" placeholder="Cole o texto criptografado aqui..."></textarea>
                     </div>
                 </div>
 
-                <!-- File Decrypt -->
                 <div id="decrypt-file-panel" style="display:none">
                     <div class="form-group">
                         <label class="form-label">Arquivo .crypto</label>
@@ -919,14 +854,11 @@
             panels.forEach(p => p.style.display = 'none');
             document.getElementById(`${side}-${type}-panel`).style.display = 'block';
 
-            document.querySelectorAll(`#${side}-text-panel`).forEach(el => {
-                if (el.closest('.card')) {
-                    el.closest('.card').querySelectorAll('.tab').forEach((tab, idx) => {
-                        tab.classList.toggle('active', 
-                            (type === 'text' && idx === 0) || (type === 'file' && idx === 1)
-                        );
-                    });
-                }
+            const card = document.getElementById(`${side}-text-panel`).closest('.card');
+            card.querySelectorAll('.tab').forEach((tab, idx) => {
+                tab.classList.toggle('active', 
+                    (type === 'text' && idx === 0) || (type === 'file' && idx === 1)
+                );
             });
         }
 
@@ -1034,19 +966,9 @@
             showToast('Arquivo baixado!');
         }
 
-        // Crypto functions (simplified - replace with your actual crypto implementation)
-        async function getKey(password, salt) {
-            const encoder = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']
-            );
-            return crypto.subtle.deriveKey(
-                { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-                keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
-            );
-        }
+        // ============ CRYPTO FUNCTIONS USING CRYPTOJS (same as original) ============
 
-        async function encrypt() {
+        function encrypt() {
             const btn = document.getElementById('encrypt-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span class="loading"></span> Processando...';
@@ -1059,64 +981,45 @@
                 const isFile = document.getElementById('encrypt-file-panel').style.display !== 'none';
 
                 if (isFile && files.encrypt) {
-                    // File encryption
-                    const arrayBuffer = await files.encrypt.arrayBuffer();
-                    const salt = crypto.getRandomValues(new Uint8Array(16));
-                    const iv = crypto.getRandomValues(new Uint8Array(12));
-                    const key = await getKey(password, salt);
+                    // File encryption using CryptoJS
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const wordArray = CryptoJS.lib.WordArray.create(e.target.result);
+                        const encrypted = CryptoJS.AES.encrypt(wordArray, password).toString();
 
-                    const encrypted = await crypto.subtle.encrypt(
-                        { name: 'AES-GCM', iv: iv }, key, arrayBuffer
-                    );
+                        const blob = new Blob([encrypted], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = files.encrypt.name + '.crypto';
+                        a.click();
+                        URL.revokeObjectURL(url);
 
-                    const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-                    result.set(salt, 0);
-                    result.set(iv, salt.length);
-                    result.set(new Uint8Array(encrypted), salt.length + iv.length);
-
-                    const blob = new Blob([result], { type: 'application/octet-stream' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = files.encrypt.name + '.crypto';
-                    a.click();
-                    URL.revokeObjectURL(url);
-
-                    showToast('Arquivo criptografado e baixado!');
+                        showToast('Arquivo criptografado e baixado!');
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    };
+                    reader.readAsArrayBuffer(files.encrypt);
                 } else {
-                    // Text encryption
+                    // Text encryption using CryptoJS - preserves newlines perfectly
                     const text = document.getElementById('encrypt-text-input').value;
                     if (!text) throw new Error('Digite um texto');
 
-                    const encoder = new TextEncoder();
-                    const data = encoder.encode(text);
-                    const salt = crypto.getRandomValues(new Uint8Array(16));
-                    const iv = crypto.getRandomValues(new Uint8Array(12));
-                    const key = await getKey(password, salt);
-
-                    const encrypted = await crypto.subtle.encrypt(
-                        { name: 'AES-GCM', iv: iv }, key, data
-                    );
-
-                    const result = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-                    result.set(salt, 0);
-                    result.set(iv, salt.length);
-                    result.set(new Uint8Array(encrypted), salt.length + iv.length);
-
-                    const base64 = btoa(String.fromCharCode(...result));
-                    document.getElementById('encrypt-result-content').textContent = base64;
+                    const encrypted = CryptoJS.AES.encrypt(text, password).toString();
+                    document.getElementById('encrypt-result-content').textContent = encrypted;
                     document.getElementById('encrypt-result').classList.add('show');
                     showToast('Texto criptografado!');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             } catch (e) {
                 showToast(e.message, 'error');
-            } finally {
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
 
-        async function decrypt() {
+        function decrypt() {
             const btn = document.getElementById('decrypt-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span class="loading"></span> Processando...';
@@ -1129,59 +1032,75 @@
                 const isFile = document.getElementById('decrypt-file-panel').style.display !== 'none';
 
                 if (isFile && files.decrypt) {
-                    // File decryption
-                    const arrayBuffer = await files.decrypt.arrayBuffer();
-                    const data = new Uint8Array(arrayBuffer);
+                    // File decryption using CryptoJS
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const encrypted = e.target.result;
+                            const decrypted = CryptoJS.AES.decrypt(encrypted, password);
+                            const typedArray = convertWordArrayToUint8Array(decrypted);
 
-                    const salt = data.slice(0, 16);
-                    const iv = data.slice(16, 28);
-                    const encrypted = data.slice(28);
+                            const blob = new Blob([typedArray]);
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
 
-                    const key = await getKey(password, salt);
-                    const decrypted = await crypto.subtle.decrypt(
-                        { name: 'AES-GCM', iv: iv }, key, encrypted
-                    );
+                            const originalName = files.decrypt.name.replace('.crypto', '');
+                            a.download = originalName || 'arquivo_descriptografado';
+                            a.click();
+                            URL.revokeObjectURL(url);
 
-                    const blob = new Blob([decrypted]);
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-
-                    const originalName = files.decrypt.name.replace('.crypto', '');
-                    a.download = originalName || 'arquivo_descriptografado';
-                    a.click();
-                    URL.revokeObjectURL(url);
-
-                    showToast('Arquivo descriptografado!');
+                            showToast('Arquivo descriptografado!');
+                        } catch (err) {
+                            showToast('Senha incorreta ou arquivo inválido', 'error');
+                        }
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    };
+                    reader.readAsText(files.decrypt);
                 } else {
-                    // Text decryption
-                    const base64 = document.getElementById('decrypt-text-input').value.trim();
-                    if (!base64) throw new Error('Cole o texto criptografado');
+                    // Text decryption using CryptoJS - preserves newlines perfectly
+                    const encrypted = document.getElementById('decrypt-text-input').value.trim();
+                    if (!encrypted) throw new Error('Cole o texto criptografado');
 
-                    const binary = atob(base64);
-                    const data = new Uint8Array(binary.length);
-                    for (let i = 0; i < binary.length; i++) data[i] = binary.charCodeAt(i);
+                    const decrypted = CryptoJS.AES.decrypt(encrypted, password);
+                    const text = decrypted.toString(CryptoJS.enc.Utf8);
 
-                    const salt = data.slice(0, 16);
-                    const iv = data.slice(16, 28);
-                    const encrypted = data.slice(28);
+                    if (!text) throw new Error('Senha incorreta ou texto inválido');
 
-                    const key = await getKey(password, salt);
-                    const decrypted = await crypto.subtle.decrypt(
-                        { name: 'AES-GCM', iv: iv }, key, encrypted
-                    );
-
-                    const decoder = new TextDecoder();
-                    document.getElementById('decrypt-result-content').textContent = decoder.decode(decrypted);
+                    document.getElementById('decrypt-result-content').textContent = text;
                     document.getElementById('decrypt-result').classList.add('show');
                     showToast('Texto descriptografado!');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
                 }
             } catch (e) {
-                showToast('Senha incorreta ou dados inválidos', 'error');
-            } finally {
+                showToast(e.message, 'error');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
+        }
+
+        // Helper to convert CryptoJS WordArray to Uint8Array for file decryption
+        function convertWordArrayToUint8Array(wordArray) {
+            var arrayOfWords = wordArray.hasOwnProperty("words") ? wordArray.words : [];
+            var length = wordArray.hasOwnProperty("sigBytes") ? wordArray.sigBytes : arrayOfWords.length * 4;
+            var uInt8Array = new Uint8Array(length), index=0, word, i;
+            for (i=0; i<length; i++) {
+                word = arrayOfWords[i];
+                uInt8Array[index++] = word >> 24;
+                uInt8Array[index++] = (word >> 16) & 0xff;
+                uInt8Array[index++] = (word >> 8) & 0xff;
+                uInt8Array[index++] = word & 0xff;
+            }
+            return uInt8Array;
+        }
+
+        // Clear helper
+        function clearText(id) {
+            document.getElementById(id).value = '';
+            document.getElementById(id).focus();
+            showToast('Caixa limpa!');
         }
     </script>
 </body>
